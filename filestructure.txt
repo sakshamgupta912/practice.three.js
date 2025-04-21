@@ -1,0 +1,4 @@
+|-- index.html
+|-- package-lock.json
+|-- package.json
+|-- script.js
