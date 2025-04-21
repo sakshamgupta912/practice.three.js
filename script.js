@@ -3,25 +3,23 @@ import * as THREE from 'three';
 const canvas= document.querySelector('canvas.webgl')
 
 const scene = new THREE.Scene(); // scene
+scene.add(new THREE.AxesHelper(2))
 
 // Mesh = Object in Three js
 // Mesh = Geometry + Material
 
-const geometry = new THREE.BoxGeometry(1, 1, 1); // geometry 
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 ,wireframe: true}); // material
-const mesh= new THREE.Mesh(geometry,material)
-mesh.position.z=1
-scene.add(mesh)
-
-const axesHelper = new THREE.AxesHelper(3)
-
-scene.add(axesHelper)
-mesh.scale.set(2,0.5,0.5) 
-mesh.rotation.reorder('YXZ')
-mesh.rotation.y=Math.PI * 0.25
-mesh.rotation.x=Math.PI * 0.25 
+const group = new THREE.Group()
+const cube1 = new THREE.Mesh(new THREE.BoxGeometry( 1, 1, 1 ),new THREE.MeshBasicMaterial( {color: 0xFF0000} ))
+const cube2 = new THREE.Mesh(new THREE.BoxGeometry( 1, 1, 1 ),new THREE.MeshBasicMaterial( {color: 0xFFFFFF} ))
+cube2.position.x= -2
+const cube3 = new THREE.Mesh(new THREE.BoxGeometry( 1, 1, 1 ),new THREE.MeshBasicMaterial( {color: 0x00ff00} ))
+cube3.position.x= 2
+group.add(cube1,cube2,cube3);
+scene.add(group)
 
 
+
+group.rotation.y=10
 // Camera
 // One type of camera is PerspectiveCamera, two parameters main
 // Field of View and aspect ratio
@@ -32,8 +30,8 @@ const sizes = {
 }
 
 const camera= new THREE.PerspectiveCamera(75,sizes.width/sizes.height)
-camera.position.z= 3
-camera.lookAt(mesh.position)
+camera.position.z= 5
+camera.lookAt(group.position)
 
 // Renderer- it renders the scene from the camera prespective, draws it on canvas
 // We are going to use WEBGL renderer
