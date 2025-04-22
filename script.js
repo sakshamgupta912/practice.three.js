@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-
+import { OrbitControls } from 'three/examples/jsm/Addons.js'
 /**
  * Base
  */
@@ -17,19 +17,15 @@ const cursor = {
     X: 0,
     Y:0 ,
 }
-window.addEventListener('mousemove',(e)=>{
-    cursor.X= e.clientX/sizes.width -0.5;
-    cursor.Y= -(e.clientY/sizes.height -0.5);
-    console.log(cursor.X,cursor.Y)
-})
 // Scene
 const scene = new THREE.Scene()
 
 // Object
 const mesh = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1, 5, 5, 5),
-    new THREE.MeshBasicMaterial({ color: 0xff0000 })
+    new THREE.BoxGeometry(1, 1, 1,3,3,3),
+    new THREE.MeshBasicMaterial({ color: 0xff0000 , wireframe:true})
 )
+
 scene.add(mesh)
 
 // Camera
@@ -39,21 +35,25 @@ camera.position.z = 2
 
 scene.add(camera)
 
+//Orbit Controls
+
+const orbitControls = new OrbitControls(camera,canvas)
+orbitControls.target.x=0
+orbitControls.enableDamping= true
+
 // Renderer
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas
 })
 renderer.setSize(sizes.width, sizes.height)
 
-// Animate
+
 
 
 const tick = () =>
 {   
-    camera.position.x=Math.sin(cursor.X*Math.PI*2)*3
-    camera.position.z=Math.cos(cursor.X*Math.PI*2)*3
-    camera.position.y=cursor.Y*5
-    camera.lookAt(mesh.position)
+    
+    orbitControls.update()
     // Render   
     renderer.render(scene, camera)
 
