@@ -63,11 +63,14 @@ const scene = new THREE.Scene()
 //Custom Gerometry for single triangle
 
 const geometry= new THREE.BufferGeometry();
-const postionArray = new Float32Array([
-    0,0,0,
-    0,1,0,
-    1,0,0
-]);
+const count = 100 ; // Number of faces
+
+const postionArray = new Float32Array(count * 3 * 3);
+
+for(var i =0 ; i<count * 3 * 3;i++)
+{
+    postionArray[i]=Math.random()-.5
+}
 const positionAttribute = new THREE.BufferAttribute(postionArray,3);
 geometry.setAttribute('position',positionAttribute)
 
