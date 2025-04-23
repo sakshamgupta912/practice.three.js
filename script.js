@@ -9,21 +9,61 @@ const canvas = document.querySelector('canvas.webgl')
 
 // Sizes
 const sizes = {
-    width: 800,
-    height: 600
+    width: window.innerWidth,
+    height: window.innerHeight
 }
 
-const cursor = {
-    X: 0,
-    Y:0 ,
-}
+//Window Resize Handle
+window.addEventListener("resize",(e)=>{
+    sizes.width= window.innerWidth;
+    sizes.height= window.innerHeight;
+
+    //Update Camera
+    camera.aspect=sizes.width / sizes.height;
+    camera.updateProjectionMatrix()
+
+    //Update Renderer
+    renderer.setSize(sizes.width, sizes.height)
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio,2))
+    
+})
+
+//Full Screen Code
+window.addEventListener("dblclick",(e)=>{
+    const fullScreenElement = document.fullscreenElement || document.webkitFullscreenElement ;
+    if(!fullScreenElement)
+    {
+        if(canvas.requestFullscreen)
+        {
+            canvas.requestFullscreen()
+        }
+        else if (canvas.webkitRequestFullscreen)
+        {
+            canvas.webkitRequestFullscreen()
+        }
+        
+        console.log("Go to full screen")
+    }
+    else
+    {
+        if(document.exitFullscreen)
+            {
+                document.exitFullscreen()
+            }
+            else if (document.webkitExitFullscreen)
+            {
+                document.webkitExitFullscreen()
+            }
+    }
+})
+
 // Scene
 const scene = new THREE.Scene()
 
 // Object
 const mesh = new THREE.Mesh(
     new THREE.BoxGeometry(1, 1, 1,3,3,3),
-    new THREE.MeshBasicMaterial({ color: 0xff0000 , wireframe:true})
+    new THREE.MeshBasicMaterial({ color: 0xff0000 , wireframe:false})
 )
 
 scene.add(mesh)
