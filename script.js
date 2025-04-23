@@ -60,10 +60,21 @@ window.addEventListener("dblclick",(e)=>{
 // Scene
 const scene = new THREE.Scene()
 
-// Object
+//Custom Gerometry for single triangle
+
+const geometry= new THREE.BufferGeometry();
+const postionArray = new Float32Array([
+    0,0,0,
+    0,1,0,
+    1,0,0
+]);
+const positionAttribute = new THREE.BufferAttribute(postionArray,3);
+geometry.setAttribute('position',positionAttribute)
+
+// Object 
 const mesh = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1,3,3,3),
-    new THREE.MeshBasicMaterial({ color: 0xff0000 , wireframe:false})
+    geometry,
+    new THREE.MeshBasicMaterial({ color: 0xff0000 , wireframe:true})
 )
 
 scene.add(mesh)
