@@ -1,12 +1,11 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/Addons.js'
-/**
- * Base
- */
+import gsap from 'gsap'
+import GUI from 'lil-gui'
+
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
-
-
+const debugObject = {color: '#ffffff',segments: 2}
 // Sizes
 const sizes = {
     width: window.innerWidth,
@@ -60,37 +59,85 @@ window.addEventListener("dblclick",(e)=>{
 // Scene
 const scene = new THREE.Scene()
 
-//Custom Gerometry for single triangle
 
-const geometry= new THREE.BufferGeometry();
-const count = 100 ; // Number of faces
+// Gerometry for single triangle
 
-const postionArray = new Float32Array(count * 3 * 3);
+const geometry= new THREE.BoxGeometry(1,1,1,debugObject.segments,debugObject.segments,debugObject.segments)
 
-for(var i =0 ; i<count * 3 * 3;i++)
-{
-    postionArray[i]=Math.random()-.5
-}
-const positionAttribute = new THREE.BufferAttribute(postionArray,3);
-geometry.setAttribute('position',positionAttribute)
+// material
 
-// Object 
+const material = new THREE.MeshBasicMaterial({ color: debugObject.color , wireframe:true})
+
+// Object or Mesh for sqaure
 const mesh = new THREE.Mesh(
     geometry,
-    new THREE.MeshBasicMaterial({ color: 0xff0000 , wireframe:true})
+    material
 )
 
 scene.add(mesh)
 
+// Lil Gui
+
+const gui = new GUI({
+    width:500,
+    closeFolders:true,
+    title:'Debug UI'})
+
+    
+window.addEventListener('keydown',(e)=>{
+    if(e.key == 'h')
+        gui.show(gui._hidden)
+})    
+const cubeDebug = gui.addFolder('Cube');
+
+//Range 
+cubeDebug
+    .add(mesh.position,'y')
+    .min(2)
+    .max(10)
+    .step(1)
+    .name('Elevation')
+   
+//Checkbox    
+cubeDebug
+    .add(mesh,'visible') 
+
+cubeDebug
+    .add(material,'wireframe') 
+
+//Color    
+cubeDebug
+    .addColor(debugObject,'color')
+    .onChange(()=>{
+        material.color.set(debugObject.color)
+    })
+
+//Function or Button
+debugObject.
+    spin= ()=>{
+        gsap.to(mesh.rotation,{y: mesh.rotation.y + Math.PI* 2 , duration:2})
+    }
+cubeDebug
+    .add(debugObject,'spin')
+    
+// Update segments
+cubeDebug
+    .add(debugObject,'segments')
+    .min(1)
+    .max(100)
+    .step(1)
+    .onFinishChange(()=>{
+        mesh.geometry.dispose()
+        mesh.geometry = new THREE.BoxGeometry(1,1,1,debugObject.segments,debugObject.segments,debugObject.segments)
+
+    })
+
 // Camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height)
 camera.position.z = 2
-
-
 scene.add(camera)
 
 //Orbit Controls
-
 const orbitControls = new OrbitControls(camera,canvas)
 orbitControls.target.x=0
 orbitControls.enableDamping= true
